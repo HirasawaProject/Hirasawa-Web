@@ -19,10 +19,28 @@ class PluginManager
             $pluginDirectory = $directory . '/' . $file;
             if (is_dir($pluginDirectory)) {
                 if (file_exists($pluginDirectory . '/plugin.json')) {
+                    // Require all files from the plugin
+                    $this->requireAllFilesRecursively($pluginDirectory);
+
                     $pluginDescriptor = PluginDescriptor::fromArray(json_decode(file_get_contents($pluginDirectory . '/plugin.json'), true));
-                    require_once($pluginDirectory . '/' . $pluginDescriptor->getMain() . '.php');
                     $plugin = new ("plugins\\" . $file . '\\' . $pluginDescriptor->getMain())($pluginDescriptor);
                     $this->loadPlugin($plugin);
+                }
+            }
+        }
+    }
+
+    private function requireAllFilesRecursively(string $baseDirectory)
+    {
+        $files = array_diff(scandir($baseDirectory), [], ['.', '..']);
+
+        foreach ($files as $file) {
+            $pluginDirectory = $baseDirectory . '/' . $file;
+            if (is_dir($pluginDirectory)) {
+                $this->requireAllFilesRecursively($pluginDirectory);
+            } else {
+                if (substr($pluginDirectory, -4) == '.php') {
+                    require_once($pluginDirectory);
                 }
             }
         }
