@@ -30,7 +30,7 @@ class BeatmapSetFactory extends Factory
         ];
     }
 
-    public function withBeatmaps($beatmapAttributes, $withLeaderboard): self
+    public function withBeatmaps($beatmapAttributes = [], $withLeaderboard = false): self
     {
         return $this->afterCreating(function (BeatmapSet $beatmapSet) use ($beatmapAttributes, $withLeaderboard) {
             $beatmapAttributes = array_merge($beatmapAttributes, [
