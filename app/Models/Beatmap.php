@@ -70,4 +70,9 @@ class Beatmap extends Model
                 break;
         }
     }
+
+    public function getUserScore(User $user, Mode $mode)
+    {
+        return $this->scores()->where('gamemode', $mode->value)->where('user_id', $user->id)->first();
+    }
 }

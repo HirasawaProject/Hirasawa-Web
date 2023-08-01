@@ -19,7 +19,7 @@ class ScoresController extends Controller
             $beatmap = Beatmap::where('hash', $request->input('c'))->first();
             $mode = Mode::from($request->input('m'));
             $scores = $beatmap ? $beatmap->getTop50($mode) : null;
-            $userScore = $beatmap ? $beatmap->scores()->where('rank', '<', 50)->inRandomOrder()->first() : null;
+            $userScore = $beatmap ? $beatmap->getUserScore(Auth::user(), $mode) : null;
 
             return view('osuweb.leaderboard.index', compact('beatmap', 'mode', 'scores', 'userScore'));
         } else {
