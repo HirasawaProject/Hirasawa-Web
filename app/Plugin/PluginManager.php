@@ -14,7 +14,11 @@ class PluginManager
 
     function loadPluginsFromDirectory(string $directory)
     {
-        $files = scandir(base_path() . '/' . $directory);
+        $baseDirectory = base_path() . '/' . $directory;
+        if (!is_dir($baseDirectory)) {
+            mkdir($baseDirectory);
+        }
+        $files = scandir($baseDirectory);
         foreach ($files as $file) {
             $pluginDirectory = $directory . '/' . $file;
             if (is_dir($pluginDirectory)) {
