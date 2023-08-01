@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Middleware\StripWhitespace;
+use App\Http\Middleware\OsuClientOnly;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +35,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// prefix group with /web
+Route::prefix('web')->middleware([StripWhitespace::class, OsuClientOnly::class])->group(function () {
+    Route::get('/osu-osz2-getscores.php', [\App\Http\Controllers\OsuWeb\ScoresController::class, 'getScores'])->name('web.scores.get');
 });
 
 require __DIR__.'/auth.php';
