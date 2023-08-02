@@ -69,6 +69,8 @@ class Beatmap extends Model
                 $this->mania_ranks = $rank - 1;
                 break;
         }
+
+        $this->save();
     }
 
     public function getUserScore(User $user, Mode $mode)
