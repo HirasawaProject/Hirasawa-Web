@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Enums\Mode;
 
 class User extends Authenticatable
 {
@@ -42,4 +43,19 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    function stats()
+    {
+        return $this->hasMany(UserStats::class);
+    }
+
+    function scores()
+    {
+        return $this->hasMany(Score::class);
+    }
+
+    function getUserStats(Mode $mode)
+    {
+        return $this->stats()->where('gamemode', $mode->value)->first();
+    }
 }
