@@ -61,6 +61,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | osu! URLs
+    |--------------------------------------------------------------------------
+    |
+    | These URLs will be used for internal services communicating with osu!
+    |
+    */
+
+    'osu_url' => 'osu.' . env('OSU_BASE_URL'),
+    'osu_asset_url' => 'assets.' . env('OSU_BASE_URL'),
+    'osu_avatars_url' => 'a.' . env('OSU_BASE_URL'),
+    'osu_bancho_url' => 'c.' . env('OSU_BASE_URL'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
