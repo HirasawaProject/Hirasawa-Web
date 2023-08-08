@@ -25,6 +25,11 @@ class Beatmap extends Model
         return $this->scores()->where('gamemode',  $mode->value)->orderBy('rank', 'asc')->limit(50)->get();
     }
 
+    public function getScoresForMode(Mode $mode)
+    {
+        return $this->scores()->where('gamemode', $mode->value)->orderBy('score', 'desc')->get();
+    }
+
     public function getRankCount(Mode $mode)
     {
         switch ($mode) {

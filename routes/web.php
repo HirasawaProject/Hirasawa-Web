@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\OsuWeb\ScoresController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,8 +39,10 @@ Route::middleware('auth')->group(function () {
 });
 
 // prefix group with /web
-Route::prefix('web')->middleware([StripWhitespace::class, OsuClientOnly::class])->group(function () {
-    Route::get('/osu-osz2-getscores.php', [\App\Http\Controllers\OsuWeb\ScoresController::class, 'getScores'])->name('web.scores.get');
+Route::prefix('web')->middleware([StripWhitespace::class, OsuClientOnly::class])->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->group(function () {
+    Route::get('/osu-osz2-getscores.php', [ScoresController::class, 'getScores'])->name('web.scores.get');
+    Route::post('/osu-submit-modular.php', [ScoresController::class, 'submitScore'])->name('web.scores.submit');
+    Route::post('/osu-submit-modular-selector.php', [ScoresController::class, 'submitScore'])->name('web.scores.submit');
 });
 
 require __DIR__.'/auth.php';
