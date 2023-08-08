@@ -1,0 +1,1 @@
+beatmapId:{{ $beatmap->id }}|beatmapSetId:{{ $beatmap->beatmapset_id }}|beatmapPlaycount:1|beatmapPasscount:1|approvedDate:2019-01-01 12:01:50
