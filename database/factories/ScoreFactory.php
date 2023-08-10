@@ -31,7 +31,6 @@ class ScoreFactory extends Factory
             'count_geki' => $this->faker->numberBetween(1, 1000),
             'full_combo' => $this->faker->boolean,
             'mods' => 0,
-            'timestamp' => $this->faker->numberBetween(1, 1000),
             'beatmap_id' => Beatmap::inRandomOrder()->first()->id,
             'mode' => $this->faker->numberBetween(0, 3),
             'rank' => $this->faker->numberBetween(0, 3),
