@@ -42,7 +42,6 @@ class BeatmapSetFactory extends Factory
             }
             $beatmap = $beatmapFactory->create($beatmapAttributes);
             $beatmapSet->beatmaps()->save($beatmap);
-            $beatmap->processLeaderboard();
         });
     }
 }
