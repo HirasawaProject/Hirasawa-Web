@@ -51,10 +51,9 @@ class ScoreService
         $score->count_geki = $newScore['count_geki'];
         $score->count_katu = $newScore['count_katu'];
         $score->count_miss = $newScore['count_miss'];
-        $score->gamemode = $mode->value;
+        $score->mode = $mode->value;
         $score->rank = 0;
         $score->mods = $newScore['mods'];
-        $score->timestamp = 0;
         $score->accuracy = $this->calculateAccuracy($score);
 
         if ($userScore && $userScore->score > $newScore['score']) {
