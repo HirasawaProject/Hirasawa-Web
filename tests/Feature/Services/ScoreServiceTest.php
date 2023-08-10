@@ -19,6 +19,36 @@ class ScoreServiceTest extends TestCase
     }
 
     /**
+     * This is a basic test of taking the decrypted score object from my own play and checking the values match
+     * 
+     * The "not_sure" variable is changed to "asdf" because we are not sure what it is and don't want to expose anything
+     */
+    public function testDecodingEncodedScore()
+    {
+        $encodedScore = "8d9756be1d932eb2f4760664a1497e48:Connor:f759254d81d851dbbf128624037d483f:111:2:0:42:2:3:407250:137:False:A:0:True:0:230808043154:20230727:asdf";
+        $decodedScore = $this->scoreService->decodeSubmittedScore($encodedScore);
+        $this->assertEquals($decodedScore['beatmap_hash'], "8d9756be1d932eb2f4760664a1497e48");
+        $this->assertEquals($decodedScore['username'], "Connor");
+        $this->assertEquals($decodedScore['verification_hash'], "f759254d81d851dbbf128624037d483f"); // We don't use this
+        $this->assertEquals($decodedScore['count_300'], 111);
+        $this->assertEquals($decodedScore['count_100'], 2);
+        $this->assertEquals($decodedScore['count_50'], 0);
+        $this->assertEquals($decodedScore['count_geki'], 42);
+        $this->assertEquals($decodedScore['count_katu'], 2);
+        $this->assertEquals($decodedScore['count_miss'], 3);
+        $this->assertEquals($decodedScore['score'], 407250);
+        $this->assertEquals($decodedScore['combo'], 137);
+        $this->assertEquals($decodedScore['full_combo'], false);
+        $this->assertEquals($decodedScore['rank'], "A");
+        $this->assertEquals($decodedScore['mods'], 0);
+        $this->assertEquals($decodedScore['pass'], true);
+        $this->assertEquals($decodedScore['mode'], 0);
+        $this->assertEquals($decodedScore['date'], 230808043154); // We don't use this
+        $this->assertEquals($decodedScore['version'], 20230727);
+        $this->assertEquals($decodedScore['not_sure'], "asdf");    
+    }
+
+    /**
      * We're gonna test the osu! accuracy formula using random public scores from the osu! Reddit
      */
     public function testOsuAccuracy(): void
