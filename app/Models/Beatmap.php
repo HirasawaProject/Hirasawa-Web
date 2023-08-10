@@ -20,28 +20,24 @@ class Beatmap extends Model
         return $this->hasMany(Score::class);
     }
 
+    public function beatmapStats()
+    {
+        return $this->hasMany(BeatmapStats::class);
+    }
+
     public function getTop50(Mode $mode)
     {
-        return $this->scores()->where('gamemode',  $mode->value)->orderBy('rank', 'asc')->limit(50)->get();
+        return $this->scores()->where('mode',  $mode->value)->orderBy('rank', 'asc')->limit(50)->get();
     }
 
     public function getScoresForMode(Mode $mode)
     {
-        return $this->scores()->where('gamemode', $mode->value)->orderBy('score', 'desc')->get();
+        return $this->scores()->where('mode', $mode->value)->orderBy('score', 'desc')->get();
     }
 
-    public function getRankCount(Mode $mode)
+    public function getBeatmapStats(Mode $mode)
     {
-        switch ($mode) {
-            case Mode::OSU:
-                return $this->osu_ranks;
-            case Mode::TAIKO:
-                return $this->taiko_ranks;
-            case Mode::CATCH_THE_BEAT:
-                return $this->ctb_ranks;
-            case Mode::MANIA:
-                return $this->mania_ranks;
-        }
+        return $this->beatmapStats()->where('mode', $mode->value)->first();
     }
 
     public function processLeaderboard()
@@ -52,7 +48,7 @@ class Beatmap extends Model
     }
 
     public function processLeaderboardForMode(Mode $mode) {
-        $scores = $this->scores()->where('gamemode', $mode->value)->orderBy('score', 'desc')->get();
+        $scores = $this->scores()->where('mode', $mode->value)->orderBy('score', 'desc')->get();
         $rank = 1;
         foreach ($scores as $score) {
             $score->rank = $rank;
@@ -60,26 +56,13 @@ class Beatmap extends Model
             $rank++;
         }
 
-        switch ($mode) {
-            case Mode::OSU:
-                $this->osu_ranks = $rank - 1;
-                break;
-            case Mode::TAIKO:
-                $this->taiko_ranks = $rank - 1;
-                break;
-            case Mode::CATCH_THE_BEAT:
-                $this->ctb_ranks = $rank - 1;
-                break;
-            case Mode::MANIA:
-                $this->mania_ranks = $rank - 1;
-                break;
-        }
-
-        $this->save();
+        $stats = $this->getBeatmapStats($mode);
+        $stats->ranks = $rank - 1;
+        $stats->save();
     }
 
     public function getUserScore(User $user, Mode $mode)
     {
-        return $this->scores()->where('gamemode', $mode->value)->where('user_id', $user->id)->first();
+        return $this->scores()->where('mode', $mode->value)->where('user_id', $user->id)->first();
     }
 }

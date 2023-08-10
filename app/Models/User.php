@@ -56,6 +56,6 @@ class User extends Authenticatable
 
     function getUserStats(Mode $mode)
     {
-        return $this->stats()->where('gamemode', $mode->value)->first();
+        return $this->stats()->where('mode', $mode->value)->first();
     }
 }

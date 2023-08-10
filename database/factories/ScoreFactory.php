@@ -33,7 +33,7 @@ class ScoreFactory extends Factory
             'mods' => 0,
             'timestamp' => $this->faker->numberBetween(1, 1000),
             'beatmap_id' => Beatmap::inRandomOrder()->first()->id,
-            'gamemode' => $this->faker->numberBetween(0, 3),
+            'mode' => $this->faker->numberBetween(0, 3),
             'rank' => $this->faker->numberBetween(0, 3),
             'accuracy' => $this->faker->randomFloat(2, 0, 10),
             'has_replay' => $this->faker->boolean,
