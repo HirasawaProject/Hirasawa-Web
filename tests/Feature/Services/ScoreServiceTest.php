@@ -15,6 +15,8 @@ use App\Enums\Mode;
 
 class ScoreServiceTest extends TestCase
 {
+    use RefreshDatabase;
+
     private ScoreService $scoreService;
 
     public function setUp(): void
