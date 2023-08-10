@@ -9,10 +9,20 @@ use App\Models\User;
 use App\Models\BeatmapSet;
 use App\Models\Score;
 use App\Enums\Mode;
+use App\Services\LeaderboardService;
 
 class GetScoresTest extends TestCase
 {
     use RefreshDatabase;
+
+    private LeaderboardService $leaderboardService;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->leaderboardService = $this->app->make('App\Services\LeaderboardService');
+    }
 
     private function constructUrl($params): string
     {
@@ -66,10 +76,8 @@ class GetScoresTest extends TestCase
         $score = Score::factory()->create([
             'user_id' => $user2->id,
             'beatmap_id' => $beatmap->id,
-            'gamemode' => 0,
+            'mode' => 0,
         ]);
-
-        $beatmap->processLeaderboardForMode(Mode::OSU);
 
         $response = $this->withHeaders([
             'User-Agent' => 'osu!'
@@ -82,7 +90,7 @@ class GetScoresTest extends TestCase
 
         $contentLines = explode("\n", $response->getContent());
         $this->assertEquals(7, count($contentLines));
-        $this->assertEquals("1|false|{$beatmap->osu_id}|{$beatmapSet->osu_id}|1", $contentLines[0]);
+        $this->assertEquals("1|false|{$beatmap->osu_id}|{$beatmapSet->osu_id}|0", $contentLines[0]);
         $this->assertEquals("", $contentLines[4]);
         $this->assertStringContainsString($user2->username, $contentLines[5]);
     }
@@ -96,7 +104,7 @@ class GetScoresTest extends TestCase
         $score = Score::factory()->create([
             'user_id' => $user->id,
             'beatmap_id' => $beatmap->id,
-            'gamemode' => 0,
+            'mode' => 0,
             'score' => 1000000,
         ]);
 
@@ -104,11 +112,11 @@ class GetScoresTest extends TestCase
         $score2 = Score::factory()->create([
             'user_id' => $user2->id,
             'beatmap_id' => $beatmap->id,
-            'gamemode' => 0,
+            'mode' => 0,
             'score' => 2000000,
         ]);
 
-        $beatmap->processLeaderboardForMode(Mode::OSU);
+        $this->leaderboardService->processBeatmapLeaderboard($beatmap, Mode::OSU);
 
         $response = $this->withHeaders([
             'User-Agent' => 'osu!'
@@ -121,7 +129,7 @@ class GetScoresTest extends TestCase
 
         $contentLines = explode("\n", $response->getContent());
         $this->assertEquals(8, count($contentLines));
-        $this->assertEquals("1|false|{$beatmap->osu_id}|{$beatmapSet->osu_id}|2", $contentLines[0]);
+        $this->assertEquals("1|false|{$beatmap->osu_id}|{$beatmapSet->osu_id}|0", $contentLines[0]);
         $this->assertStringContainsString($user->username, $contentLines[4]);
         $this->assertStringContainsString($user2->username, $contentLines[5]);
         $this->assertStringContainsString($user->username, $contentLines[6]);
@@ -136,7 +144,7 @@ class GetScoresTest extends TestCase
         $score = Score::factory()->create([
             'user_id' => $user->id,
             'beatmap_id' => $beatmap->id,
-            'gamemode' => 0,
+            'mode' => 0,
             'score' => 1000000,
         ]);
 
@@ -144,11 +152,9 @@ class GetScoresTest extends TestCase
         $score2 = Score::factory()->create([
             'user_id' => $user2->id,
             'beatmap_id' => $beatmap->id,
-            'gamemode' => 0,
+            'mode' => 0,
             'score' => 2000000,
         ]);
-
-        $beatmap->processLeaderboardForMode(Mode::OSU);
 
         $response = $this->withHeaders([
             'User-Agent' => 'osu!'
@@ -173,14 +179,14 @@ class GetScoresTest extends TestCase
         $score = Score::factory()->create([
             'user_id' => $user->id,
             'beatmap_id' => $beatmap->id,
-            'gamemode' => 0,
+            'mode' => 0,
             'score' => 1000000,
         ]);
 
         $score = Score::factory()->create([
             'user_id' => $user->id,
             'beatmap_id' => $beatmap->id,
-            'gamemode' => 1,
+            'mode' => 1,
             'score' => 1000000,
         ]);
 
@@ -188,7 +194,7 @@ class GetScoresTest extends TestCase
         $score2 = Score::factory()->create([
             'user_id' => $user2->id,
             'beatmap_id' => $beatmap->id,
-            'gamemode' => 0,
+            'mode' => 0,
             'score' => 2000000,
         ]);
 
@@ -196,12 +202,12 @@ class GetScoresTest extends TestCase
         $score3 = Score::factory()->create([
             'user_id' => $user3->id,
             'beatmap_id' => $beatmap->id,
-            'gamemode' => 1,
+            'mode' => 1,
             'score' => 2000000,
         ]);
 
-        $beatmap->processLeaderboardForMode(Mode::OSU);
-        $beatmap->processLeaderboardForMode(Mode::TAIKO);
+        $this->leaderboardService->processBeatmapLeaderboard($beatmap, Mode::OSU);
+        $this->leaderboardService->processBeatmapLeaderboard($beatmap, Mode::TAIKO);
 
         $response = $this->withHeaders([
             'User-Agent' => 'osu!'
@@ -214,7 +220,7 @@ class GetScoresTest extends TestCase
 
         $contentLines = explode("\n", $response->getContent());
         $this->assertEquals(8, count($contentLines));
-        $this->assertEquals("1|false|{$beatmap->osu_id}|{$beatmapSet->osu_id}|2", $contentLines[0]);
+        $this->assertEquals("1|false|{$beatmap->osu_id}|{$beatmapSet->osu_id}|0", $contentLines[0]);
         $this->assertStringContainsString($user->username, $contentLines[4]);
         $this->assertStringContainsString($user2->username, $contentLines[5]);
         $this->assertStringContainsString($user->username, $contentLines[6]);
@@ -230,7 +236,7 @@ class GetScoresTest extends TestCase
 
         $contentLines = explode("\n", $response->getContent());
         $this->assertEquals(8, count($contentLines));
-        $this->assertEquals("1|false|{$beatmap->osu_id}|{$beatmapSet->osu_id}|2", $contentLines[0]);
+        $this->assertEquals("1|false|{$beatmap->osu_id}|{$beatmapSet->osu_id}|0", $contentLines[0]);
         $this->assertStringContainsString($user->username, $contentLines[4]);
         $this->assertStringContainsString($user3->username, $contentLines[5]);
         $this->assertStringContainsString($user->username, $contentLines[6]);
