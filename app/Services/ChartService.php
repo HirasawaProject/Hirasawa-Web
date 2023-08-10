@@ -26,7 +26,7 @@ class ChartService
                 'chartName' => 'Beatmap Ranking',
                 'chartUrl' => config('osu_url') . "/b/{$beatmap->osu_id}",
                 ...$this->generateBeforeAndAfter('rankedScore', $oldScore ? $oldScore->score : 0, $newScore->score, $newScore->exists),
-                ...$this->generateBeforeAndAfter('maxCombo', $oldScore ? $oldScore->combo : 0, $newScore->score, $newScore->exists),
+                ...$this->generateBeforeAndAfter('maxCombo', $oldScore ? $oldScore->combo : 0, $newScore->combo, $newScore->exists),
                 ...$this->generateBeforeAndAfter('accuracy', $oldScore ? $oldScore->accuracy : 0, $newScore->accuracy, $newScore->exists),
                 'ppBefore' => 0,
                 'ppAfter' => 0,
