@@ -13,7 +13,7 @@ class LeaderboardService
     function processGlobalLeaderboard(Mode $mode)
     {
         $index = 1;
-        foreach (UserStats::where('gamemode', $mode->value)->orderBy('ranked_score')->get() as $userStat) {
+        foreach (UserStats::where('mode', $mode->value)->orderBy('ranked_score')->get() as $userStat) {
             $userStat->rank = $index;
             $userStat->save();
             $index++;
