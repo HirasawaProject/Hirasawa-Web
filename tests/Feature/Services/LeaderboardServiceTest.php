@@ -10,6 +10,7 @@ use App\Enums\Mode;
 use App\Models\UserStats;
 use App\Services\LeaderboardService;
 use App\Models\BeatmapSet;
+use App\Models\Score;
 
 class LeaderboardServiceTest extends TestCase
 {
@@ -77,5 +78,21 @@ class LeaderboardServiceTest extends TestCase
             $lastScore = $score->score;
             $index++;
         }
+    }
+
+    public function testProcessUserLeaderboard()
+    {
+        $user = User::factory()->withStats()->create();
+        BeatmapSet::factory(100)->withBeatmaps()->create();
+
+        $scores = Score::factory()->create([
+            'user_id' => $user->id,
+            'mode' => Mode::OSU
+        ]);
+
+        $this->leaderboardService->processUserLeaderboard($user, Mode::OSU);
+        $userStats = $user->getUserStats(Mode::OSU);
+        $this->assertEquals($scores->sum('score'), $userStats->ranked_score);
+        $this->assertEquals($scores->avg('accuracy'), $userStats->accuracy);
     }
 }
