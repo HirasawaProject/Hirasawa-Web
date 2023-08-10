@@ -7,6 +7,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Services\ScoreService;
 use App\Models\Score;
+use App\Models\Beatmap;
+use App\Models\BeatmapSet;
+use App\Models\User;
+use App\Models\UserStats;
+use App\Enums\Mode;
 
 class ScoreServiceTest extends TestCase
 {
@@ -46,6 +51,58 @@ class ScoreServiceTest extends TestCase
         $this->assertEquals($decodedScore['date'], 230808043154); // We don't use this
         $this->assertEquals($decodedScore['version'], 20230727);
         $this->assertEquals($decodedScore['not_sure'], "asdf");    
+    }
+
+    public function testCreateScoreWithNoUserScore()
+    {
+        $beatmapSet = BeatmapSet::factory()->withBeatmaps()->create();
+        $beatmap = $beatmapSet->beatmaps->first();
+        $user = User::factory()->withStats()->create();
+
+        $newScore = $this->scoreService->decodeSubmittedScore("{$beatmap->hash}:Connor:f759254d81d851dbbf128624037d483f:111:2:0:42:2:3:407250:137:False:A:0:True:0:230808043154:20230727:asdf");
+        $score = $this->scoreService->createScore($user, $beatmap, Mode::OSU, $newScore);
+        
+        $this->assertTrue($score->exists);
+    }
+
+    public function testCreateScoreWithWorseUserScore()
+    {
+        $beatmapSet = BeatmapSet::factory()->withBeatmaps()->create();
+        $beatmap = $beatmapSet->beatmaps->first();
+        $user = User::factory()->withStats()->create();
+
+        Score::factory()->create([
+            'user_id' => $user->id,
+            'beatmap_id' => $beatmap->id,
+            'mode' => 0,
+            'score' => 100000
+        ]);
+
+        $newScore = $this->scoreService->decodeSubmittedScore("{$beatmap->hash}:Connor:f759254d81d851dbbf128624037d483f:111:2:0:42:2:3:407250:137:False:A:0:True:0:230808043154:20230727:asdf");
+        $score = $this->scoreService->createScore($user, $beatmap, Mode::OSU, $newScore);
+        
+        $this->assertTrue($score->exists);
+        $this->assertEquals($beatmap->getUserScore($user, Mode::OSU)->score, 407250);
+    }
+
+    public function testCreateScoreWithBetterUserScore()
+    {
+        $beatmapSet = BeatmapSet::factory()->withBeatmaps()->create();
+        $beatmap = $beatmapSet->beatmaps->first();
+        $user = User::factory()->withStats()->create();
+
+        Score::factory()->create([
+            'user_id' => $user->id,
+            'beatmap_id' => $beatmap->id,
+            'mode' => 0,
+            'score' => 10000000
+        ]);
+
+        $newScore = $this->scoreService->decodeSubmittedScore("{$beatmap->hash}:Connor:f759254d81d851dbbf128624037d483f:111:2:0:42:2:3:407250:137:False:A:0:True:0:230808043154:20230727:asdf");
+        $score = $this->scoreService->createScore($user, $beatmap, Mode::OSU, $newScore);
+        
+        $this->assertFalse($score->exists);
+        $this->assertEquals($beatmap->getUserScore($user, Mode::OSU)->score, 10000000);
     }
 
     /**
