@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Enums\Mode;
 use App\Models\UserStats;
 use App\Services\LeaderboardService;
+use App\Models\BeatmapSet;
 
 class LeaderboardServiceTest extends TestCase
 {
@@ -59,5 +60,22 @@ class LeaderboardServiceTest extends TestCase
 
         $this->assertEquals($user1->id, $userStats[3]->user_id);
         $this->assertEquals(4, $userStats[3]->rank);
+    }
+
+    public function testProcessBeatmapLeaderboard()
+    {
+        User::factory(200)->withStats()->create();
+        $beatmapSet = BeatmapSet::factory()->withBeatmaps([], true)->create();
+        $beatmap = $beatmapSet->beatmaps->first();
+
+        $this->leaderboardService->processBeatmapLeaderboard($beatmap, Mode::OSU);
+        $lastScore = 100_000_000; // large score that will never be reached
+        $index = 0;
+        foreach ($beatmap->getScoresForMode(Mode::OSU) as $score) {
+            $this->assertTrue($score->score < $lastScore);
+            $this->assertEquals($index + 1, $score->rank);
+            $lastScore = $score->score;
+            $index++;
+        }
     }
 }
