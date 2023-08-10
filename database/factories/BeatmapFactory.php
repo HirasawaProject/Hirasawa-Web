@@ -36,8 +36,6 @@ class BeatmapFactory extends Factory
             'bpm' => $this->faker->randomFloat(2, 0, 10),
             'has_storyboard' => $this->faker->boolean,
             'max_combo' => $this->faker->numberBetween(1, 1000),
-            'play_count' => $this->faker->numberBetween(1, 1000),
-            'pass_count' => $this->faker->numberBetween(1, 1000)
         ];
     }
 
