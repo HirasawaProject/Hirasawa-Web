@@ -40,27 +40,6 @@ class Beatmap extends Model
         return $this->beatmapStats()->where('mode', $mode->value)->first();
     }
 
-    public function processLeaderboard()
-    {
-        foreach (Mode::cases() as $mode) {
-            $this->processLeaderboardForMode($mode);
-        }
-    }
-
-    public function processLeaderboardForMode(Mode $mode) {
-        $scores = $this->scores()->where('mode', $mode->value)->orderBy('score', 'desc')->get();
-        $rank = 1;
-        foreach ($scores as $score) {
-            $score->rank = $rank;
-            $score->save();
-            $rank++;
-        }
-
-        $stats = $this->getBeatmapStats($mode);
-        $stats->ranks = $rank - 1;
-        $stats->save();
-    }
-
     public function getUserScore(User $user, Mode $mode)
     {
         return $this->scores()->where('mode', $mode->value)->where('user_id', $user->id)->first();
