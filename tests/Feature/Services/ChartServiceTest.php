@@ -140,4 +140,63 @@ class ChartServiceTest extends TestCase
             'onlineScoreId' => $scoreAfter->id
         ], $chart[1]);
     }
+
+    public function testGetGenerateChartForNewWorseScore()
+    {
+        $beatmapSet = BeatmapSet::factory()->withBeatmaps()->create();
+        $beatmap = $beatmapSet->beatmaps->first();
+        $user = User::factory()->withStats()->create();
+
+        $userStatsBefore = $user->getUserStats(Mode::OSU);
+
+        $scoreBefore = Score::factory()->create([
+            'beatmap_id' => $beatmap->id,
+            'user_id' => $user->id,
+            'score' => 2000,
+        ]);
+
+        $scoreAfter = Score::factory()->create([
+            'beatmap_id' => $beatmap->id,
+            'user_id' => $user->id,
+            'score' => 1000,
+        ]);
+        $scoreAfter->delete(); // simulating score was never created
+    
+
+        $userStatsAfter = $user->getUserStats(Mode::OSU);
+        
+        $chart = $this->chartService->generateCharts($user, $beatmap, $scoreBefore, $scoreAfter, $userStatsBefore, $userStatsAfter);
+
+        $this->assertCount(2, $chart);
+
+        $this->assertEquals([
+            'chartId' => 'beatmap',
+            'chartName' => 'Beatmap Ranking',
+            'chartUrl' => config('osu_url') . "/b/{$beatmap->osu_id}",
+            'rankedScoreBefore' => $scoreBefore->score,
+            'maxComboBefore' => $scoreBefore->combo,
+            'accuracyBefore' => $scoreBefore->accuracy,
+            'ppBefore' => 0,
+            'ppAfter' => 0,
+            'rankBefore' => $scoreBefore->rank,
+            'onlineScoreId' => $scoreBefore->id
+        ], $chart[0]);
+
+        $this->assertEquals([
+            'chartId' => 'overall',
+            'chartName' => 'Overall Ranking',
+            'chartUrl' => config('osu_url') . "/u/{$user->id}",
+            'rankedScoreBefore' => $userStatsBefore->ranked_score,
+            'rankedScoreAfter' => $userStatsAfter->ranked_score,
+            'totalScoreBefore' => $userStatsBefore->total_score,
+            'totalScoreAfter' => $userStatsAfter->total_score,
+            'accuracyBefore' => $userStatsBefore->accuracy,
+            'accuracyAfter' => $userStatsAfter->accuracy,
+            'ppBefore' => 0,
+            'ppAfter' => 0,
+            'rankBefore' => $userStatsBefore->rank,
+            'rankAfter' => $userStatsAfter->rank,
+            'onlineScoreId' => $scoreBefore->id
+        ], $chart[1]);
+    }
 }
