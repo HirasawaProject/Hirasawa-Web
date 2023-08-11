@@ -80,15 +80,15 @@ class ScoreService
                 break;
             case 1:
                 // taiko
-                $accuracy = ($score->count_300 + ($score->count_100 / 5)) / ($score->count_300 + $score->count_100 + $score->count_miss);
+                $accuracy = ($score->count_300 + ($score->count_100 * 0.5)) / ($score->count_300 + $score->count_100 + $score->count_miss);
                 break;
             case 2:
                 // ctb
-                $accuracy = ($score->count_300 + $score->count_100 + $score->count_50) / ($score->count_300 + $score->count_100 + $score->count_50 + $score->count_miss);
+                $accuracy = ($score->count_300 + $score->count_100 + $score->count_50) / ($score->count_300 + $score->count_100 + $score->count_50 + $score->count_miss + $score->count_katu);
                 break;
             case 3:
                 // mania
-                $accuracy = (300 * ($score->count_300 + $score->count_geki)) + (200 * $score->count_katu) + (100 * ($score->count_100 + $score->count_50)) / (300 * ($score->count_300 + $score->count_geki + $score->count_katu + $score->count_100 + $score->count_50 + $score->count_miss));
+                $accuracy = ((300 * ($score->count_300 + $score->count_geki)) + (200 * $score->count_katu) + (100 * $score->count_100) + (50 * $score->count_50)) / (300 * ($score->count_300 + $score->count_geki + $score->count_katu + $score->count_100 + $score->count_50 + $score->count_miss));
                 break;                
         }
         
