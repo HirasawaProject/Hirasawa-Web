@@ -31,4 +31,34 @@ class RemoteEventTest extends TestCase
         
         $this->artisan('cs:event:listen');
     }
+
+    function testRemoteHirasawaEventsArePromotedToAHirasawaEvent()
+    {
+        Redis::shouldReceive('subscribe')
+            ->once()
+            ->with(['*'], \Mockery::type('callable'))
+            ->andReturnUsing(function ($channels, $callback) {
+                // Simulate a message received from Redis
+                $callback(json_encode([
+                    'some' => 'data',
+                    'to' => 'test',
+                ]), 'event:some.fully.qualified.package.with.Class');
+            });
+
+        EventManager::shouldReceive('callEvent')->once(); // RemoteMessageReceivedEvent
+        
+        EventManager::shouldReceive('callEvent') // RemoteHirasawaEventReceivedEvent - Generic
+            ->once()
+            ->with(Mockery::type(RemoteHirasawaEventReceivedEvent::class))
+            ->andReturnUsing(function ($event) {
+                $this->assertEquals('some.fully.qualified.package.with', $event->package);
+                $this->assertEquals('Class', $event->class);
+                $this->assertEquals([
+                    'some' => 'data',
+                    'to' => 'test'
+                ], $event->payload);
+            });
+        
+        $this->artisan('cs:event:listen');
+    }
 }
