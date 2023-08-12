@@ -4,6 +4,7 @@ namespace Tests\Feature\Plugin;
 
 use Tests\TestCase;
 use App\Plugin\Events\Remote\RemoteMessageReceivedEvent;
+use App\Plugin\Events\Remote\RemoteHirasawaEventReceivedEvent;
 use Mockery;
 use Illuminate\Support\Facades\Redis;
 use App\Facades\EventManager;
@@ -33,20 +34,7 @@ class RemoteEventTest extends TestCase
     }
 
     function testRemoteHirasawaEventsArePromotedToAHirasawaEvent()
-    {
-        Redis::shouldReceive('subscribe')
-            ->once()
-            ->with(['*'], \Mockery::type('callable'))
-            ->andReturnUsing(function ($channels, $callback) {
-                // Simulate a message received from Redis
-                $callback(json_encode([
-                    'some' => 'data',
-                    'to' => 'test',
-                ]), 'event:some.fully.qualified.package.with.Class');
-            });
-
-        EventManager::shouldReceive('callEvent')->once(); // RemoteMessageReceivedEvent
-        
+    {   
         EventManager::shouldReceive('callEvent') // RemoteHirasawaEventReceivedEvent - Generic
             ->once()
             ->with(Mockery::type(RemoteHirasawaEventReceivedEvent::class))
@@ -59,6 +47,10 @@ class RemoteEventTest extends TestCase
                 ], $event->payload);
             });
         
-        $this->artisan('cs:event:listen');
+        $remoteListener = new \App\Plugin\Internal\Listeners\RemoteListener();
+        $remoteListener->onRemoteMessage(new RemoteMessageReceivedEvent('event', 'some.fully.qualified.package.with.Class', json_encode([
+            'some' => 'data',
+            'to' => 'test',
+        ])));
     }
 }
