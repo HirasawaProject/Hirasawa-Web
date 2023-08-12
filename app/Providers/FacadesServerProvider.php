@@ -23,5 +23,9 @@ class FacadesServerProvider extends ServiceProvider
         App::bind('pluginmanager', function () {
             return new \App\Plugin\PluginManager();
         });
+        
+        App::bind('eventmanager', function () {
+            return new \App\Plugin\Events\EventManager();
+        });
     }
 }
