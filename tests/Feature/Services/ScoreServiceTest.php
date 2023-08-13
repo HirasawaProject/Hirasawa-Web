@@ -59,7 +59,7 @@ class ScoreServiceTest extends TestCase
     {
         $beatmapSet = BeatmapSet::factory()->withBeatmaps()->create();
         $beatmap = $beatmapSet->beatmaps->first();
-        $user = User::factory()->withStats()->create();
+        $user = User::factory()->create();
 
         $newScore = $this->scoreService->decodeSubmittedScore("{$beatmap->hash}:Connor:f759254d81d851dbbf128624037d483f:111:2:0:42:2:3:407250:137:False:A:0:True:0:230808043154:20230727:asdf");
         $score = $this->scoreService->createScore($user, $beatmap, Mode::OSU, $newScore);
@@ -71,7 +71,7 @@ class ScoreServiceTest extends TestCase
     {
         $beatmapSet = BeatmapSet::factory()->withBeatmaps()->create();
         $beatmap = $beatmapSet->beatmaps->first();
-        $user = User::factory()->withStats()->create();
+        $user = User::factory()->create();
 
         Score::factory()->create([
             'user_id' => $user->id,
@@ -91,7 +91,7 @@ class ScoreServiceTest extends TestCase
     {
         $beatmapSet = BeatmapSet::factory()->withBeatmaps()->create();
         $beatmap = $beatmapSet->beatmaps->first();
-        $user = User::factory()->withStats()->create();
+        $user = User::factory()->create();
 
         Score::factory()->create([
             'user_id' => $user->id,

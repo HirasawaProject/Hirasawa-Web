@@ -9,6 +9,8 @@ class UserStats extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['mode'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
