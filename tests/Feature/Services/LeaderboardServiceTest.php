@@ -48,7 +48,7 @@ class LeaderboardServiceTest extends TestCase
         $user4Stats->save();
 
         $this->leaderboardService->processGlobalLeaderboard(Mode::OSU);
-        $userStats = UserStats::orderBy('rank', 'asc')->get();
+        $userStats = UserStats::where('mode', Mode::OSU)->orderBy('rank', 'asc')->get();
 
         $this->assertEquals($user4->id, $userStats[0]->user_id);
         $this->assertEquals(1, $userStats[0]->rank);
