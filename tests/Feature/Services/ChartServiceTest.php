@@ -28,7 +28,7 @@ class ChartServiceTest extends TestCase
     {
         $beatmapSet = BeatmapSet::factory()->withBeatmaps()->create();
         $beatmap = $beatmapSet->beatmaps->first();
-        $user = User::factory()->withStats()->create();
+        $user = User::factory()->create();
 
         $userStatsBefore = $user->getUserStats(Mode::OSU);
 
@@ -82,7 +82,7 @@ class ChartServiceTest extends TestCase
     {
         $beatmapSet = BeatmapSet::factory()->withBeatmaps()->create();
         $beatmap = $beatmapSet->beatmaps->first();
-        $user = User::factory()->withStats()->create();
+        $user = User::factory()->create();
 
         $userStatsBefore = $user->getUserStats(Mode::OSU);
 
@@ -145,7 +145,7 @@ class ChartServiceTest extends TestCase
     {
         $beatmapSet = BeatmapSet::factory()->withBeatmaps()->create();
         $beatmap = $beatmapSet->beatmaps->first();
-        $user = User::factory()->withStats()->create();
+        $user = User::factory()->create();
 
         $userStatsBefore = $user->getUserStats(Mode::OSU);
 

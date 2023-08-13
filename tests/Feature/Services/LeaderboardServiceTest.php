@@ -26,13 +26,13 @@ class LeaderboardServiceTest extends TestCase
 
     public function testProcessGlobalLeaderboard()
     {
-        $user1 = User::factory()->withStats()->create();
+        $user1 = User::factory()->create();
         $user1Stats = $user1->getUserStats(Mode::OSU);
-        $user2 = User::factory()->withStats()->create();
+        $user2 = User::factory()->create();
         $user2Stats = $user2->getUserStats(Mode::OSU);
-        $user3 = User::factory()->withStats()->create();
+        $user3 = User::factory()->create();
         $user3Stats = $user3->getUserStats(Mode::OSU);
-        $user4 = User::factory()->withStats()->create();
+        $user4 = User::factory()->create();
         $user4Stats = $user4->getUserStats(Mode::OSU);
 
         $user1Stats->ranked_score = 2_000_000;
@@ -65,7 +65,7 @@ class LeaderboardServiceTest extends TestCase
 
     public function testProcessBeatmapLeaderboard()
     {
-        User::factory(200)->withStats()->create();
+        User::factory(200)->create();
         $beatmapSet = BeatmapSet::factory()->withBeatmaps([], true)->create();
         $beatmap = $beatmapSet->beatmaps->first();
 
@@ -82,7 +82,7 @@ class LeaderboardServiceTest extends TestCase
 
     public function testProcessUserLeaderboard()
     {
-        $user = User::factory()->withStats()->create();
+        $user = User::factory()->create();
         BeatmapSet::factory(100)->withBeatmaps()->create();
 
         $scores = Score::factory()->create([

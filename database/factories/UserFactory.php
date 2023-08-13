@@ -38,16 +38,4 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
-
-    public function withStats(): self
-    {
-        return $this->afterCreating(function (User $user) {
-            foreach (Mode::cases() as $mode) {
-                UserStats::factory()->create([
-                    'user_id' => $user->id,
-                    'mode' => $mode
-                ]);
-            }
-        });
-    }
 }
