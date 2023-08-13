@@ -45,4 +45,8 @@ Route::prefix('web')->middleware([StripWhitespace::class, OsuClientOnly::class])
     Route::post('/osu-submit-modular-selector.php', [ScoresController::class, 'submitScore'])->name('web.scores.submit');
 });
 
+Route::get('/u/{user}', [ProfileController::class, 'show'])->name('profile.show-shorthand');
+Route::get('/user/{user}', [ProfileController::class, 'show'])->name('profile.show');
+
+
 require __DIR__.'/auth.php';
