@@ -184,6 +184,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\FacadesServerProvider::class,
         App\Providers\PluginServiceProvider::class,
+        App\Providers\ObserverServiceProvider::class,
     ])->toArray(),
 
     /*
