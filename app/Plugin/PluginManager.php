@@ -2,12 +2,20 @@
 
 namespace App\Plugin;
 
+use App\Models\Plugin;
+
 class PluginManager
 {
     private array $loadedPlugins = [];
 
-    function loadPlugin(HirasawaPlugin $plugin)
+    function loadPlugin(HirasawaPlugin $plugin, $bypassDisabled = false)
     {
+        if (!$bypassDisabled) {
+            $pluginInfo = Plugin::where('platform', 'web')->where('name', $plugin->getName())->where('author', $plugin->getAuthor())->first();
+            if ($pluginInfo?->is_enabled == false) {
+                return;
+            }
+        }
         $this->loadedPlugins[$plugin->getName()] = $plugin;
         $plugin->onEnable();
     }
