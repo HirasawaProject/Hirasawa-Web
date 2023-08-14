@@ -10,11 +10,9 @@ class PluginManager
 
     function loadPlugin(HirasawaPlugin $plugin, $bypassDisabled = false)
     {
-        if (!$bypassDisabled) {
-            $pluginInfo = Plugin::where('platform', 'web')->where('name', $plugin->getName())->where('author', $plugin->getAuthor())->first();
-            if ($pluginInfo?->is_enabled == false) {
-                return;
-            }
+        $pluginInfo = Plugin::where('platform', 'web')->where('name', $plugin->getName())->where('author', $plugin->getAuthor())->first();
+        if ((!$bypassDisabled && $pluginInfo?->is_enabled == false) || $pluginInfo?->version !== $plugin->getVersion()) {
+            return;
         }
         $this->loadedPlugins[$plugin->getName()] = $plugin;
         $plugin->onEnable();
