@@ -39,11 +39,8 @@ class SetupPlugins extends Command
         $this->info('Setting up plugins...');
         foreach ($installedPlugins as $installedPlugin) {
             $knownPlugin = $knownPlugins->where('name', $installedPlugin->getName())->where('author', $installedPlugin->getAuthor())->first();
-            if ($knownPlugin->is_disabled) {
-                continue;
-            }
             if ($knownPlugin) {
-                if ($knownPlugin->version === $installedPlugin->getVersion()) {
+                if ($knownPlugin->version === $installedPlugin->getVersion() || !$knownPlugin->is_enabled) {
                     continue;
                 }
                 $this->info('Upgrading ' . $installedPlugin->getName());
