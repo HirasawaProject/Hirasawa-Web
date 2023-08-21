@@ -58,4 +58,9 @@ class User extends Authenticatable
     {
         return $this->stats()->where('mode', $mode->value)->first();
     }
+
+    function rankHistory()
+    {
+        return $this->hasMany(UserRankHistory::class);
+    }
 }
