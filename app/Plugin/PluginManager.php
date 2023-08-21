@@ -2,18 +2,25 @@
 
 namespace App\Plugin;
 
+use App\Models\Plugin;
+
 class PluginManager
 {
     private array $loadedPlugins = [];
 
-    function loadPlugin(HirasawaPlugin $plugin)
+    function loadPlugin(HirasawaPlugin $plugin, $bypassDisabled = false)
     {
+        $pluginInfo = Plugin::where('platform', 'web')->where('name', $plugin->getName())->where('author', $plugin->getAuthor())->first();
+        if ((!$bypassDisabled && $pluginInfo?->is_enabled == false) || $pluginInfo?->version !== $plugin->getVersion()) {
+            return;
+        }
         $this->loadedPlugins[$plugin->getName()] = $plugin;
         $plugin->onEnable();
     }
 
-    function loadPluginsFromDirectory(string $directory)
+    function getPluginsFromDirectory(string $directory): array
     {
+        $plugins = [];
         $baseDirectory = base_path() . '/' . $directory;
         if (!is_dir($baseDirectory)) {
             mkdir($baseDirectory);
@@ -23,14 +30,25 @@ class PluginManager
             $pluginDirectory = $directory . '/' . $file;
             if (is_dir($pluginDirectory)) {
                 if (file_exists($pluginDirectory . '/plugin.json')) {
-                    // Require all files from the plugin
-                    $this->requireAllFilesRecursively($pluginDirectory);
-
                     $pluginDescriptor = PluginDescriptor::fromArray(json_decode(file_get_contents($pluginDirectory . '/plugin.json'), true));
+                    require_once($pluginDirectory . '/' . $pluginDescriptor->getMain() . '.php');
                     $plugin = new ("plugins\\" . $file . '\\' . $pluginDescriptor->getMain())($pluginDescriptor);
-                    $this->loadPlugin($plugin);
+                    $plugins[$pluginDirectory] = $plugin;
                 }
             }
+        }
+
+        return $plugins;
+    }
+
+    function loadPluginsFromDirectory(string $directory)
+    {
+        $plugins = $this->getPluginsFromDirectory($directory);
+        foreach ($plugins as $pluginDirectory => $plugin) {
+            // Require all files from the plugin
+            $this->requireAllFilesRecursively($pluginDirectory);
+
+            $this->loadPlugin($plugin);
         }
     }
 

@@ -26,4 +26,8 @@ abstract class HirasawaPlugin implements IHirasawaPlugin
     {
         return $this->pluginDescriptor->getAuthor();
     }
+
+    public function onInstall() {}
+    public function onUpgrade(string $lastVersion) {}
+    public function onUninstall() {}
 }
