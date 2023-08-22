@@ -3,6 +3,7 @@
 namespace App\Plugin\Activities;
 
 use App\Models\UserActivity;
+use App\Models\User;
 
 class ActivityManager
 {
@@ -15,11 +16,11 @@ class ActivityManager
 
     function handleActivity(UserActivity $activity): String
     {
-        if (!array_key_exists($activity->key, $this->registeredActivities)) {
+        if (!array_key_exists($activity->activity_key, $this->registeredActivities)) {
             throw new \Exception("Activity not registered");
         }
 
-        return $this->registeredActivities[$activityKey]->build($activity);
+        return $this->registeredActivities[$activity->activity_key]->build($activity);
     }
 
     function attachActivity(User $user, String $activityKey, array $params = []): UserActivity
@@ -28,15 +29,15 @@ class ActivityManager
             throw new \Exception("Activity not registered");
         }
 
-        $this->registerActivity[$activityKey]->getRequiredParams()->each(function ($requiredParam) use ($params) {
+        foreach($this->registeredActivities[$activityKey]->getRequiredParams() as $requiredParam) {
             if (!array_key_exists($requiredParam, $params)) {
                 throw new \Exception("Missing required parameter: $requiredParam");
             }
-        });
+        }
 
         $activity = new UserActivity();
         $activity->user_id = $user->id;
-        $activity->key = $activityKey;
+        $activity->activity_key = $activityKey;
         $activity->params = $params;
         $activity->save();
 
