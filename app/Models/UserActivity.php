@@ -9,6 +9,10 @@ class UserActivity extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'params' => 'array'
+    ];
+
     function user()
     {
         return $this->belongsTo(User::class);
