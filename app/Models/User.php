@@ -63,4 +63,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserRankHistory::class);
     }
+
+    function activities()
+    {
+        return $this->hasMany(Activity::class);
+    }
 }
