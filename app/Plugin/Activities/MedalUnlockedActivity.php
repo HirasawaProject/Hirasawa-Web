@@ -4,7 +4,7 @@ namespace App\Plugin\Activities;
 
 use App\Models\UserActivity;
 
-class RankActivity implements ActivityBuilder
+class MedalUnlockedActivity implements ActivityBuilder
 {
     function build(UserActivity $activity): String
     {
