@@ -4,7 +4,7 @@ namespace App\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class PluginManager extends Facade
+class ActivityManager extends Facade
 {
     protected static function getFacadeAccessor()
     {
