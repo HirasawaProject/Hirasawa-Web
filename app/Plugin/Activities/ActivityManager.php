@@ -9,6 +9,12 @@ class ActivityManager
 {
     private array $registeredActivities = [];
 
+    function __construct()
+    {
+        $this->registerActivity("hirasawa.medal-unlocked", new MedalUnlockedActivity());
+        $this->registerActivity("hirasawa.rank-achieved", new RankAchievedActivity());
+    }
+
     function registerActivity(String $activityKey, ActivityBuilder $activityBuilder)
     {
         $this->registeredActivities[$activityKey] = $activityBuilder;
