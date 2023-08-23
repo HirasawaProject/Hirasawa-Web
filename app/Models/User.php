@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Enums\Mode;
+use App\Facades\ActivityManager;
 
 class User extends Authenticatable
 {
@@ -62,5 +63,20 @@ class User extends Authenticatable
     function rankHistory()
     {
         return $this->hasMany(UserRankHistory::class);
+    }
+
+    function activities()
+    {
+        return $this->hasMany(UserActivity::class);
+    }
+
+    function buildActivities(): Array
+    {
+        $built = [];
+        $this->activities->map(function ($activity) use (&$built) {
+            $built[] = ActivityManager::handleActivity($activity);
+        });
+
+        return $built;
     }
 }

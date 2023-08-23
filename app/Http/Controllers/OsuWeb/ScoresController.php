@@ -14,6 +14,7 @@ use App\Services\ScoreService;
 use App\Services\LeaderboardService;
 use App\Services\ChartService;
 use App\Services\ReplayService;
+use App\Plugin\Activities\ActivityManager;
 
 
 class ScoresController extends Controller
@@ -86,6 +87,12 @@ class ScoresController extends Controller
                 }
                 $this->replayService->saveReplay($newScore, $request->file('score'));
                 $newScore->refresh();
+
+                ActivityManager::attachActivity(Auth::user(), "hirasawa.rank-achieved", [
+                    "rank" => $newScore->rank,
+                    "beatmap_id" => $beatmap->id,
+                    "mode" => $mode->value
+                ]);
             }
 
             $newStats = Auth::user()->getUserStats($mode);
