@@ -50,7 +50,7 @@ const userButtons = ref([
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <!-- Settings Dropdown -->
-                            <div class="ml-3 relative">
+                            <div class="ml-3 relative" v-if="$page.props.auth.user">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
@@ -85,6 +85,15 @@ const userButtons = ref([
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>
+                            </div>
+                            <div class="ml-3 relative" v-else>
+                                <NavLink :href="route('login')">
+                                    Log In
+                                </NavLink>
+
+                                <NavLink :href="route('register')">
+                                    Register
+                                </NavLink>
                             </div>
                         </div>
 
@@ -133,7 +142,7 @@ const userButtons = ref([
                     </div>
 
                     <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
+                    <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600" v-if="$page.props.auth.user">
                         <div class="px-4">
                             <div class="font-medium text-base text-gray-800 dark:text-gray-200">
                                 {{ $page.props.auth.user.username }}
@@ -149,6 +158,15 @@ const userButtons = ref([
                                 Log Out
                             </ResponsiveNavLink>
                         </div>
+                    </div>
+                    <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600" v-else>
+                        <ResponsiveNavLink :href="route('login')">
+                            Log In
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('register')">
+                            Register
+                        </ResponsiveNavLink>
                     </div>
                 </div>
             </nav>
