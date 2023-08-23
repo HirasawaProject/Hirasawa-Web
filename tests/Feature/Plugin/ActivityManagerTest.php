@@ -44,6 +44,19 @@ class ActivityManagerTest extends TestCase
             "notMessage" => "Hello, world!"
         ]);
     }
+
+    function testUserCanReturnAllActivities()
+    {
+        $user = User::factory()->create();
+        ActivityManager::registerActivity("echo", new EchoActivity());
+
+        $activity = ActivityManager::attachActivity($user, "echo", [
+            "message" => "Hello, world!"
+        ]);
+
+        $this->assertCount(1, $user->buildActivities());
+        $this->assertEquals("Hello, world!", $user->buildActivities()[0]);
+    }
 }
 
 class EchoActivity implements ActivityBuilder
