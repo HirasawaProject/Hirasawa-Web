@@ -10,7 +10,7 @@ class UserStatsService
     function updateUserStats(User $user, Mode $mode, array $scoreData)
     {
         $userStats = $user->getUserStats($mode);
-        $userStats->playcount++;
+        $userStats->play_count++;
         $userStats->total_score += $scoreData['score'];
         $userStats->max_combo = max($userStats->max_combo, $scoreData['max_combo']);
         $userStats->total_hits += match($mode) {
