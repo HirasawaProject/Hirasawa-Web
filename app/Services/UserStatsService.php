@@ -12,7 +12,7 @@ class UserStatsService
         $userStats = $user->getUserStats($mode);
         $userStats->play_count++;
         $userStats->total_score += $scoreData['score'];
-        $userStats->max_combo = max($userStats->max_combo, $scoreData['max_combo']);
+        $userStats->max_combo = max($userStats->max_combo, $scoreData['combo']);
         $userStats->total_hits += match($mode) {
             Mode::OSU => $scoreData['count_300'] + $scoreData['count_100'] + $scoreData['count_50'],
             Mode::TAIKO => $scoreData['count_300'] + $scoreData['count_100'],
