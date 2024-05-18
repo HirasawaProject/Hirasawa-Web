@@ -8,6 +8,19 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
+// TODO make these configurable via plugins
+const headerButtons = ref([
+    {
+        'name': 'Home',
+        'route': 'dashboard',
+    },
+]);
+const userButtons = ref([
+    {
+        'name': 'Profile',
+        'route': 'profile.edit',
+    },
+]);
 </script>
 
 <template>
@@ -29,15 +42,15 @@ const showingNavigationDropdown = ref(false);
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                                <NavLink :href="route(button.route)" :active="route().current(button.route)" v-for="button in headerButtons">
+                                    {{ button.name }}
                                 </NavLink>
                             </div>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <!-- Settings Dropdown -->
-                            <div class="ml-3 relative">
+                            <div class="ml-3 relative" v-if="$page.props.auth.user">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
@@ -64,12 +77,23 @@ const showingNavigationDropdown = ref(false);
                                     </template>
 
                                     <template #content>
-                                        <DropdownLink :href="route('profile.show', $page.props.auth.user.id)"> Profile </DropdownLink>
+                                        <DropdownLink :href="route(button.route)" v-for="button in userButtons">
+                                            {{ button.name }}
+                                        </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
                                             Log Out
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>
+                            </div>
+                            <div class="ml-3 relative" v-else>
+                                <NavLink :href="route('login')">
+                                    Log In
+                                </NavLink>
+
+                                <NavLink :href="route('register')">
+                                    Register
+                                </NavLink>
                             </div>
                         </div>
 
@@ -112,13 +136,13 @@ const showingNavigationDropdown = ref(false);
                     class="sm:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
+                        <ResponsiveNavLink :href="route(button.route)" :active="route().current(button.route)" v-for="button in headerButtons">
+                            {{ button.name }}
                         </ResponsiveNavLink>
                     </div>
 
                     <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
+                    <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600" v-if="$page.props.auth.user">
                         <div class="px-4">
                             <div class="font-medium text-base text-gray-800 dark:text-gray-200">
                                 {{ $page.props.auth.user.username }}
@@ -127,11 +151,22 @@ const showingNavigationDropdown = ref(false);
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.show', $page.props.auth.user.id)"> Profile </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route(button.route)" v-for="button in userButtons">
+                                {{ button.name }}
+                            </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('logout')" method="post" as="button">
                                 Log Out
                             </ResponsiveNavLink>
                         </div>
+                    </div>
+                    <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600" v-else>
+                        <ResponsiveNavLink :href="route('login')">
+                            Log In
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('register')">
+                            Register
+                        </ResponsiveNavLink>
                     </div>
                 </div>
             </nav>

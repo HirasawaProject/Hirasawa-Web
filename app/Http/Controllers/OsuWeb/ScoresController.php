@@ -14,6 +14,8 @@ use App\Services\ScoreService;
 use App\Services\LeaderboardService;
 use App\Services\ChartService;
 use App\Services\ReplayService;
+use App\Services\UserStatsService;
+use App\Plugin\Activities\ActivityManager;
 
 
 class ScoresController extends Controller
@@ -22,13 +24,16 @@ class ScoresController extends Controller
     private LeaderboardService $leaderboardService;
     private ChartService $chartService;
     private ReplayService $replayService;
+    private UserStatsService $userStatsService;
 
-    function __construct(ScoreService $scoreService, LeaderboardService $leaderboardService, ChartService $chartService, ReplayService $replayService)
+    function __construct(ScoreService $scoreService, LeaderboardService $leaderboardService, ChartService $chartService, ReplayService $replayService, 
+        UserStatsService $userStatsService)
     {
         $this->scoreService = new ScoreService();
         $this->leaderboardService = new LeaderboardService();
         $this->chartService = new ChartService();
         $this->replayService = new ReplayService();
+        $this->userStatsService = $userStatsService;
     }
 
     function getScores(Request $request)
@@ -50,10 +55,6 @@ class ScoresController extends Controller
 
     function submitScore(Request $request)
     {
-        if ($request->input('ft') > 0) {
-            // This is a failed score, we don't care about it
-            return response('');
-        }
         // We are not passed the username so we need to grab it from the encrypted score object
         $iv = base64_decode($request->input('iv'));
         $key = "osu!-scoreburgr---------" . $request->input('osuver');
@@ -74,8 +75,16 @@ class ScoresController extends Controller
 
             $mode = Mode::from($scoreData['mode']);
             $oldScore = $beatmap->getUserScore(Auth::user(), $mode);
-            $newScore = $this->scoreService->createScore(Auth::user(), $beatmap, $mode, $scoreData);
             $oldStats = Auth::user()->getUserStats($mode);
+
+            $this->statsService->updateUserStats(Auth::user(), $mode, $scoreData);
+            
+            if ($request->input('ft') > 0) {
+                // This is a failed score, we don't care about it
+                return response('');
+            }
+
+            $newScore = $this->scoreService->createScore(Auth::user(), $beatmap, $mode, $scoreData);
 
             if ($newScore->exists) {
                 $this->leaderboardService->processBeatmapLeaderboard($beatmap, $mode);
@@ -86,10 +95,16 @@ class ScoresController extends Controller
                 }
                 $this->replayService->saveReplay($newScore, $request->file('score'));
                 $newScore->refresh();
+
+                ActivityManager::attachActivity(Auth::user(), "hirasawa.rank-achieved", [
+                    "rank" => $newScore->rank,
+                    "beatmap_id" => $beatmap->id,
+                    "mode" => $mode->value
+                ]);
             }
 
             $newStats = Auth::user()->getUserStats($mode);
-            $newStats->total_score += $newScore->score;
+            $newStats->pass_count += 1;
             $newStats->save();
 
 
