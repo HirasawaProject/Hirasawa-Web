@@ -83,19 +83,19 @@ function modeChanged(id) {
                             <p>{{ user.stats[mode].accuracy }}%</p>
 
                             <p>Play Count</p>
-                            <p>0</p>
+                            <p>{{ user.stats[mode].play_count }}</p>
 
                             <p>Total Score</p>
                             <p>{{ user.stats[mode].total_score }}</p>
 
                             <p>Total Hits</p>
-                            <p>0</p>
+                            <p>{{ user.stats[mode].total_hits }}</p>
 
                             <p>Maximum Combo</p>
-                            <p>0</p>
+                            <p>{{ user.stats[mode].max_combo }}</p>
 
                             <p>Replays Watched by Others</p>
-                            <p>0</p>
+                            <p>{{ user.stats[mode].replays_watched }}</p>
 
                         </div>
                     </div>
