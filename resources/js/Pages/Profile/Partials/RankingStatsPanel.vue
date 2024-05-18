@@ -65,7 +65,7 @@ function modeChanged(id) {
 
                                     <div class="flex-initial">
                                         <p class="text-sm font-semibold">Country Ranking</p>
-                                        <p class="text-2xl">#???</p>
+                                        <p class="text-2xl">#{{ user.stats[mode].country_rank }}</p>
                                     </div>
                                 </div>
                             </div>
