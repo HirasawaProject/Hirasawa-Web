@@ -10,7 +10,7 @@ import {
   Legend
 } from 'chart.js'
 import { Line } from 'vue-chartjs'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 ChartJS.register(
   CategoryScale,
@@ -22,7 +22,7 @@ ChartJS.register(
 //   Legend
 )
 
-defineProps({
+const props = defineProps({
   ranks: Array,
 })
 
@@ -39,6 +39,10 @@ const options = {
         },
         'x': {
             'display': false,
+            type: 'linear',
+            min: 0,
+            max: 89,
+            reverse: true,
         }
     },
     'interaction': {
@@ -53,7 +57,7 @@ const options = {
                     const totalDays = context.dataset.data.length; // Total number of data points
                     const index = context.dataIndex; // Index of the current data point
 
-                    const daysAgo = totalDays - index; // Calculate days ago
+                    const daysAgo = index + 1; // Calculate days ago
 
                     return `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`;
                 },
