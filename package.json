@@ -19,6 +19,6 @@
     },
     "dependencies": {
         "chart.js": "^4.3.3",
-        "vue-chartjs": "^5.2.0"
+        "vue-chartjs": "^5.3.1"
     }
 }
