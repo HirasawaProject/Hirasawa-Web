@@ -4,7 +4,11 @@ import RankingGraph from './RankingGraph.vue';
 defineProps({
   user: Object,
   mode: Number,
-})
+});
+
+const emits = defineEmits([
+    'modeChanged'
+])
 
 const generateRandomChart = function() {
     var lastValue = 100;
@@ -26,6 +30,9 @@ const data = {
     }
   ]
 }
+function modeChanged(id) {
+    emits('modeChanged', id);
+}
 </script>
 
 <template>
@@ -36,6 +43,14 @@ const data = {
                     <img src="https://avatars.githubusercontent.com/u/1824804?v=4" alt="avatar" class="rounded-full w-32 h-32 relative bottom-20 -mb-20" />
                     <div class="ml-8">
                         <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-200">{{ user.username }}</h1>
+                    </div>
+                    <div class="ml-auto relative bottom-5">
+                        <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400">
+                            <li class="me-2" v-for="text, index in ['osu!', 'taiko', 'ctb', 'mania']" :key="index">
+                                <a v-if="index == mode" href="#" class="inline-block px-4 py-3 text-white bg-blue-600 rounded-lg selected">{{ text }}</a>
+                                <a v-else href="#" class="inline-block px-4 py-3 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white" @click.prevent="modeChanged(index)">{{ text }}</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="flex">
@@ -52,7 +67,6 @@ const data = {
                                         <p class="text-sm font-semibold">Country Ranking</p>
                                         <p class="text-2xl">#???</p>
                                     </div>
-
                                 </div>
                             </div>
                             <div id='ranking-graph' class="w-full h-20">

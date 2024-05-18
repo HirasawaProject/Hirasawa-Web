@@ -13,7 +13,6 @@ defineProps({
 });
 const selectedMode = ref(0);
 const sections = [
-    RankingStatsPanel,
     ActivityPanel,
     BestRanksPanel,
 ];
@@ -28,6 +27,7 @@ const sections = [
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">User Profile</h2>
         </template>
 
+        <RankingStatsPanel :user="user" :mode="selectedMode" @mode-changed="selectedMode = $event"/>
         <component :is="section" v-for="section, index in sections" :user="user" :mode="selectedMode" :key="index"/>
 
     </AuthenticatedLayout>
