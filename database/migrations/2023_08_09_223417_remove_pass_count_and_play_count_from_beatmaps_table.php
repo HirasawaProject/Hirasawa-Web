@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('beatmaps_tables', function (Blueprint $table) {
+        Schema::table('beatmaps', function (Blueprint $table) {
             $table->integer('play_count')->default(0);
             $table->integer('pass_count')->default(0);
         });
