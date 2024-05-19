@@ -20,7 +20,7 @@ const sections = [
 </script>
 
 <template>
-    <Head title="Profile" />
+    <Head :title="`${user.username}'s Profile`" />
 
     <HirasawaLayout>
         <template #header>
