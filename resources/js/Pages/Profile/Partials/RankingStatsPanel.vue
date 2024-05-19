@@ -54,7 +54,7 @@ function modeChanged(id) {
                     <div class="ml-8">
                         <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-200 flex items-center">
                             <span>{{ user.username }}</span>
-                            <img :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${user.country}.svg`" class="rounded-md h-6 ml-2 align-middle"/>
+                            <img :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${user.country.toUpperCase()}.svg`" class="rounded-md h-6 ml-2 align-middle"/>
                         </h1>
                     </div>
                     <div class="ml-auto relative bottom-5">
