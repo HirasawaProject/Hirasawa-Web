@@ -72,13 +72,13 @@ function modeChanged(id) {
                             <div id='ranking-details'>
                                 <div class="flex space-x-4">
                                     <div class="flex-initial">
-                                        <p class="text-sm font-semibold">Global Ranking</p>
-                                        <p class="text-2xl">#{{ user.stats[mode].rank }}</p>
+                                        <p class="text-sm font-semibold dark:text-gray-200">Global Ranking</p>
+                                        <p class="text-2xl dark:text-gray-200">#{{ user.stats[mode].rank }}</p>
                                     </div>
 
                                     <div class="flex-initial">
-                                        <p class="text-sm font-semibold">Country Ranking</p>
-                                        <p class="text-2xl">#{{ user.stats[mode].country_rank }}</p>
+                                        <p class="text-sm font-semibold dark:text-gray-200">Country Ranking</p>
+                                        <p class="text-2xl dark:text-gray-200">#{{ user.stats[mode].country_rank }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -88,7 +88,7 @@ function modeChanged(id) {
                         </div>
                     </div>
                     <div class="w-1/3">
-                        <div class="grid grid-flow-row grid-cols-2 text-sm">
+                        <div class="grid grid-flow-row grid-cols-2 text-sm dark:text-gray-200">
                             <p>Ranked Score</p>
                             <p>{{ user.stats[mode].ranked_score }}</p>
 

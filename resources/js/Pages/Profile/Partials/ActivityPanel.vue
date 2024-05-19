@@ -16,10 +16,10 @@ defineProps({
                     user.username + ' achieved rank #3 in some random map [Insane] (osu!)',
                     user.username + ' unlocked the \'Complete weeb\' medal!'
                 ]" class="flex">
-                    <p class="text-gray-500 dark:text-gray-400">
+                    <p class="text-gray-500 dark:text-gray-200">
                         {{ activity }}
                     </p>
-                    <p class="text-gray-500 dark:text-gray-400 ml-auto">a few hours ago</p>
+                    <p class="text-gray-500 dark:text-gray-200 ml-auto">a few hours ago</p>
                 </div>
             </div>
         </div>
