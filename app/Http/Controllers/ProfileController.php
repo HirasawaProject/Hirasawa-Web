@@ -16,7 +16,7 @@ class ProfileController extends Controller
 {
     public function show(Request $request, User $user): Response
     {
-        $user->load('stats');
+        $user->load(['stats', 'rankHistory']);
         return Inertia::render('Profile/Index', compact('user'));
     }
 

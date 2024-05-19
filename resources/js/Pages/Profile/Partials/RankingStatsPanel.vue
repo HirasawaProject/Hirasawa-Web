@@ -1,7 +1,8 @@
 <script setup>
+import { computed } from 'vue';
 import RankingGraph from './RankingGraph.vue';
 
-defineProps({
+const props = defineProps({
   user: Object,
   mode: Number,
 });
@@ -30,6 +31,15 @@ const data = {
     }
   ]
 }
+const processedRanks = computed(() => {
+    let ranks = [];
+    props.user.rank_history.forEach(element => {
+        if (element.mode == props.mode) {
+            ranks.push(element.rank);
+        }
+    });
+    return ranks;
+});
 function modeChanged(id) {
     emits('modeChanged', id);
 }
@@ -73,7 +83,7 @@ function modeChanged(id) {
                                 </div>
                             </div>
                             <div id='ranking-graph' class="w-full h-20">
-                                <RankingGraph :ranks="generateRandomChart()" />
+                                <RankingGraph :ranks="processedRanks" />
                             </div>
                         </div>
                     </div>

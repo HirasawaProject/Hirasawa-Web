@@ -36,6 +36,9 @@ const options = {
     'scales': {
         'y': {
             'display': false,
+            reverse: true,
+            min: Math.min(props.ranks),
+            max: Math.max(props.ranks),
         },
         'x': {
             'display': false,
@@ -57,7 +60,7 @@ const options = {
                     const totalDays = context.dataset.data.length; // Total number of data points
                     const index = context.dataIndex; // Index of the current data point
 
-                    const daysAgo = index + 1; // Calculate days ago
+                    const daysAgo = totalDays - index; // Calculate days ago
 
                     return `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`;
                 },
@@ -73,7 +76,7 @@ const options = {
 
 <template>
     <Line :data="{
-        labels: ranks.map((_, index) => index),
+        labels: ranks.map((_, index) => index).reverse(),
         datasets: [
             {
                 borderColor: '#0000ff',
