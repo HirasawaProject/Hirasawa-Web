@@ -18,7 +18,13 @@ const headerButtons = ref([
 const userButtons = ref([
     {
         'name': 'Profile',
+        'route': 'profile.show',
+        'params': {user: 4},
+    },
+    {
+        'name': 'Settings',
         'route': 'profile.edit',
+        'params': {},
     },
 ]);
 </script>
@@ -77,7 +83,7 @@ const userButtons = ref([
                                     </template>
 
                                     <template #content>
-                                        <DropdownLink :href="route(button.route)" v-for="button in userButtons">
+                                        <DropdownLink :href="route(button.route, button.params)" v-for="button in userButtons">
                                             {{ button.name }}
                                         </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
@@ -151,7 +157,7 @@ const userButtons = ref([
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route(button.route)" v-for="button in userButtons">
+                            <ResponsiveNavLink :href="route(button.route, button.params)" v-for="button in userButtons">
                                 {{ button.name }}
                             </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('logout')" method="post" as="button">
