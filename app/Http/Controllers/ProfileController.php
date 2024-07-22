@@ -14,10 +14,10 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
-    public function show(Request $request, User $user): Response
+    public function show(Request $request, User $user, $mode = 'osu!'): Response
     {
         $user->load(['stats', 'rankHistory']);
-        return Inertia::render('Profile/Index', compact('user'));
+        return Inertia::render('Profile/Index', compact('user', 'mode'));
     }
 
     /**

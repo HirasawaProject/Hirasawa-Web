@@ -1,15 +1,12 @@
 <script setup>
 import { computed } from 'vue';
 import RankingGraph from './RankingGraph.vue';
+import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({
   user: Object,
   mode: Number,
 });
-
-const emits = defineEmits([
-    'modeChanged'
-])
 
 const generateRandomChart = function() {
     var lastValue = 100;
@@ -40,9 +37,12 @@ const processedRanks = computed(() => {
     });
     return ranks;
 });
-function modeChanged(id) {
-    emits('modeChanged', id);
-}
+const gamemodes = [
+    'osu!',
+    'taiko',
+    'ctb',
+    'mania'
+];
 </script>
 
 <template>
@@ -59,9 +59,9 @@ function modeChanged(id) {
                     </div>
                     <div class="ml-auto relative bottom-5">
                         <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-                            <li class="me-2" v-for="text, index in ['osu!', 'taiko', 'ctb', 'mania']" :key="index">
+                            <li class="me-2" v-for="text, index in gamemodes" :key="index">                                             
                                 <a v-if="index == mode" href="#" class="inline-block px-4 py-3 text-white bg-blue-600 rounded-lg selected">{{ text }}</a>
-                                <a v-else href="#" class="inline-block px-4 py-3 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white" @click.prevent="modeChanged(index)">{{ text }}</a>
+                                <Link v-else :href="route('profile.show-gamemode', [user.id, text])" class="inline-block px-4 py-3 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white">{{ text }}</Link>
                             </li>
                         </ul>
                     </div>

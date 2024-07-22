@@ -47,6 +47,7 @@ Route::prefix('web')->middleware([StripWhitespace::class, OsuClientOnly::class])
 
 Route::get('/u/{user}', [ProfileController::class, 'show'])->name('profile.show-shorthand');
 Route::get('/user/{user}', [ProfileController::class, 'show'])->name('profile.show');
+Route::get('/user/{user}/{gamemode}', [ProfileController::class, 'show'])->name('profile.show-gamemode');
 
 
 require __DIR__.'/auth.php';
